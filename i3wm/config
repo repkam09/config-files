@@ -144,24 +144,14 @@ bindsym $mod+tab focus left
 new_window none
 for_window [title="Page(s) Unresponsive"] floating enable border normal
 for_window [instance="file_progress"] floating enable border normal
-for_window [instance="crx_nckgahadagoaajjgafhacjanaoiihapd"] floating enable border normal
-for_window [class="VirtualBox"] floating enable border normal
-for_window [class="I3-exit"] floating enable border normal
 for_window [class="conky"] floating enable border none
 for_window [class="InputOutput"] floating enable border normal
-for_window [title="Line Test"] floating enable border normal
-for_window [title="Clipping Test"] floating enable border normal
-for_window [title="Poly Fill Test"] floating enable border normal
-for_window [title="Call with Cassandra Derr"] floating enable border normal
-for_window [instance="crx_knipolnnllmklapflnccelgolnpehhpl"] floating enable border none
-for_window [title="Projection"] floating enable border normal
-for_window [title="CG Midterm i3"] floating enable border normal
 new_float normal
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
-        status_command i3status --config /home/mark/.i3/i3status.conf | /home/mark/.i3/wrapper.py
+        status_command i3status --config $HOME/.i3/i3status.conf | $HOME/.i3/wrapper.py
 	tray_output LVDS1
 	workspace_buttons yes
 	#font xft:DejaVu Sans Mono 10

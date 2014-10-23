@@ -110,6 +110,13 @@ bindsym XF86AudioPause exec rbpause
 bindsym XF86AudioNext exec rbnext
 bindsym XF86AudioPrev exec rbprev
 
+# Brightness keys
+bindsym XF86MonBrightnessDown exec sbdown
+bindsym XF86MonBrightnessUp exec sbup
+
+bindsym XF86AudioRaiseVolume exec volup
+bindsym XF86AudioLowerVolume exec voldown
+
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $mod+Shift+R restart
 # exit i3 (logs you out of your X session)
@@ -126,6 +133,7 @@ for_window [instance="crx_nckgahadagoaajjgafhacjanaoiihapd"] floating enable bor
 for_window [class="VirtualBox"] floating enable border normal
 for_window [class="conky"] floating enable border none
 for_window [class="InputOutput"] floating enable border normal
+for_window [title="Page(s) Unresponsive"] floating enable border normal
 
 # Personal school projects/few other things
 for_window [title="Line Test"] floating enable border normal
@@ -166,10 +174,11 @@ exec feh --bg-scale $HOME/.i3/bgimage.jpg
 # Starts up the NetworkManager applet
 exec --no-startup-id nm-applet
 
-#exec compton --backend glx --paint-on-overlay --glx-no-stencil --vsync opengl-swc -b
+# Enable compositing manager
+exec compton --backend glx --paint-on-overlay --glx-no-stencil --vsync opengl-swc -b
 
 # Starts up Conky
-exec sleep 1 && conky -c ~/.conky/conkyrc_grey
+exec conky -c ~/.conky/conkyrc_grey
 
 
 

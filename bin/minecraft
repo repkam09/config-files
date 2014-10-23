@@ -1,0 +1,4 @@
+#!/bin/bash
+java -jar $HOME/.minecraft/Minecraft.jar
+$HOME/.minecraft/render-all.sh
+notify-send "Map Render" "All Maps Updated!"

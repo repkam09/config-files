@@ -1,0 +1,2 @@
+#!/bin/bash
+google-chrome --app="file:///home/mark/.minecraft/mapcrafter/index.html"

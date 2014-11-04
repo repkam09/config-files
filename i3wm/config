@@ -134,6 +134,7 @@ for_window [class="VirtualBox"] floating enable border normal
 for_window [class="conky"] floating enable border none
 for_window [class="InputOutput"] floating enable border normal
 for_window [title="Page(s) Unresponsive"] floating enable border normal
+for_window [class="Eclipse" title="^Eclipse( SDK )?$"] floating enable border none
 
 # Personal school projects/few other things
 for_window [title="Line Test"] floating enable border normal

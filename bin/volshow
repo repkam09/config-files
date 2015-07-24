@@ -1,0 +1,5 @@
+#!/bin/bash
+number=`(pactl list sinks | grep "Volume: fr")`
+
+notify-send "Current Volume" "Volume: $number"
+#notify-send -i dialog-information -h int:value:$number "Hello world!"

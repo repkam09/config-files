@@ -1,2 +1,2 @@
 #!/bin/bash
-google-chrome-beta --app="http://www.netflix.com/WiHome"
+google-chrome --app="http://www.netflix.com/WiHome"

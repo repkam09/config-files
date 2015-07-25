@@ -211,7 +211,3 @@ exec feh --bg-scale $HOME/.i3/bgimage.jpg
 
 # Starts up the NetworkManager applet
 exec --no-startup-id nm-applet
-
-# Enable compositing manager
-exec compton --backend glx --paint-on-overlay --glx-no-stencil --vsync opengl-swc -b
-

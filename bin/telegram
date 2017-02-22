@@ -1,2 +1,2 @@
 #!/bin/bash
-/mnt/storage/Software/Telegram/Telegram
+/mnt/storage/software/Telegram/Telegram -startintray

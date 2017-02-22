@@ -1,2 +1,2 @@
 #!/bin/bash
-java -jar $HOME/.minecraft/Minecraft.jar
+java -jar /mnt/storage/software/minecraft/Minecraft.jar

@@ -1,0 +1,5 @@
+#!/bin/bash
+sudo apt update -q
+sudo apt upgrade --yes -q
+sudo apt autoremove --yes -q
+

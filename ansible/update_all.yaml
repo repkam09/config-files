@@ -1,0 +1,11 @@
+---
+- hosts: webservers
+  remote_user: mark
+  become: yes
+  tasks:
+  - name: run an apt update
+    shell: apt update
+    ignore_errors: True
+  - name: run an apt upgrade
+    shell: apt upgrade -y
+    ignore_errors: True

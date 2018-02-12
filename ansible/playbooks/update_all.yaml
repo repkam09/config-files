@@ -4,8 +4,8 @@
   become: yes
   tasks:
   - name: run an apt update
-    shell: apt update
+    shell: apt update --yes
     ignore_errors: True
   - name: run an apt upgrade
-    shell: apt upgrade -y
+    shell: apt upgrade --yes
     ignore_errors: True

@@ -1,2 +1,2 @@
 #!/bin/bash
-ansible-playbook ./playbooks/update.yaml -K
+ansible-playbook -i ./inventory ./playbooks/update.yaml -K

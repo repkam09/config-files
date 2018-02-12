@@ -1,2 +1,2 @@
 # /etc/ansible/hosts
-ansible-playbook ./playbooks/test.yaml
+ansible-playbook -i ./inventory ./playbooks/test.yaml

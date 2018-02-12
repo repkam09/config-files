@@ -1,5 +1,6 @@
 [webservers]
 repkam09.com
+vpn.repkam09.com ansible_python_interpreter=/usr/bin/python2.7
 
 [laptop]
 192.168.1.214
@@ -7,3 +8,4 @@ repkam09.com
 [all]
 repkam09.com
 192.168.1.214
+vpn.repkam09.com ansible_python_interpreter=/usr/bin/python2.7

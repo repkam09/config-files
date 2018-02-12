@@ -1,7 +1,7 @@
 ---
 - hosts: all
-  remote_user: root
+  remote_user: mark
   tasks:
     - name: test connection
       ping:
-      remote_user: yourname
+      remote_user: mark

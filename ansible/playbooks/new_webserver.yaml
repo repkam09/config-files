@@ -31,3 +31,18 @@
         - tmux
         - screen
         - openjdk-8-jre
+        - fail2ban
+        - ufw
+
+  - name: Allow port 22 in ufw
+    shell: ufw allow 22
+    ignore_errors: True
+
+  - name: Allow port 80 in ufw
+    shell: ufw allow 22
+    ignore_errors: True
+
+  - name: Allow port 443 in ufw
+    shell: ufw allow 443
+    ignore_errors: True
+

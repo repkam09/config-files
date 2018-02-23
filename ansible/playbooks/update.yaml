@@ -9,3 +9,15 @@
   - name: run an apt upgrade
     shell: apt upgrade --yes
     ignore_errors: True
+
+  - name: Update all packages to the latest version
+    apt:
+      upgrade: dist
+
+  - name: Remove useless packages from the cache
+    apt:
+      autoclean: yes
+
+  - name: Remove dependencies that are no longer required
+    apt:
+      autoremove: yes

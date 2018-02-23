@@ -4,7 +4,8 @@
   tasks:
   - name: test connection
       ping:
-        
+      remote_user: root
+      
   - name: Only run "update_cache=yes" if the last one is more than 3600 seconds ago
     apt:
       update_cache: yes

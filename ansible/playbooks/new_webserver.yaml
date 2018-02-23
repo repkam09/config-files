@@ -6,15 +6,6 @@
       update_cache: yes
       cache_valid_time: 3600
 
-  - name: Install list of packages
-    apt: name={{item}} state=installed
-    with_items:
-        - nginx
-        - git
-        - tmux
-        - screen
-        - openjdk-8-jre
-
   - name: Update all packages to the latest version
     apt:
       upgrade: dist
@@ -26,3 +17,12 @@
   - name: Remove dependencies that are no longer required
     apt:
       autoremove: yes
+      
+  - name: Install list of packages
+    apt: name={{item}} state=installed
+    with_items:
+        - nginx
+        - git
+        - tmux
+        - screen
+        - openjdk-8-jre

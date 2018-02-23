@@ -39,7 +39,7 @@
     ignore_errors: True
 
   - name: Allow port 80 in ufw
-    shell: ufw allow 22
+    shell: ufw allow 80
     ignore_errors: True
 
   - name: Allow port 443 in ufw

@@ -25,8 +25,8 @@ else
 fi
 
 echo Running apt updates
-apt update
-apt upgrade
+apt --yes update
+apt --yes upgrade
 
 echo Installing helpful tools...
 apt install tmux screen git

@@ -14,7 +14,8 @@ cd ~/EasyRSA-3.0.4/
 cp pki/private/$clientname.key ~/client-configs/keys/
 scp pki/reqs/$clientname.req mark@repkam09.com:/tmp
 
-echo Wait here until processing is finished on CA server...                                           read -p "Press enter to continue"
+echo Wait here until processing is finished on CA server...
+read -p "Press enter to continue"
 
 cp /tmp/$clientname.crt ~/client-configs/keys/
 cp EasyRSA-3.0.4/ta.key ~/client-configs/keys/

@@ -1,7 +1,0 @@
----
-- hosts: all
-  remote_user: mark
-  tasks:
-    - name: test connection
-      ping:
-      remote_user: mark

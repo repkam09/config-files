@@ -1,5 +1,16 @@
 #!/bin/bash
+
+BASE=`echo "$(lsb_release -is)"`
+
+if [ $BASE == "Ubuntu" ]
+then
 sudo apt update -q
 sudo apt upgrade --yes -q
 sudo apt autoremove --yes -q
+fi
 
+
+if [ $BASE == "Manjaro" ]
+then
+sudo pacman -Syu 
+fi

@@ -1,13 +1,15 @@
 #!/bin/bash
 BASE=`echo "$(lsb_release -is)"`
 
+echo Running on base $BASE
+
 if [ $BASE == "Ubuntu" ]
 then
 bash ./base/ubuntu.sh
 fi
 
 
-if [ $BASE == "Manjaro" ]
+if [ $BASE == "Manjaro-ARM" ]
 then
 bash ./base/arch.sh
 fi

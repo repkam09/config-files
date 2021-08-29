@@ -7,7 +7,13 @@ sudo apt-get upgrade
 #------------------------------------------------------------------------
 
 # personal software set 
-sudo apt-get install i3 suckless-tools curl youtube-dl ffmpeg vlc gparted vim feh arandr build-essential flatpak lxappearance gnome-software-plugin-snap gnome-software-plugin-flatpak network-manager-openvpn network-manager-openvpn-gnome xbacklight htop obs-studio 
+sudo apt-get install i3 suckless-tools curl \
+youtube-dl ffmpeg vlc gparted vim feh arandr build-essential \
+flatpak lxappearance gnome-software-plugin-snap \
+gnome-software-plugin-flatpak network-manager-openvpn \
+network-manager-openvpn-gnome xbacklight htop obs-studio
+
+sudo apt-get install hal
 
 #------------------------------------------------------------------------
 

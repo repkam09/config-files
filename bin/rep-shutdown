@@ -1,4 +1,15 @@
+#!/bin/bash
+BASE=`echo "$(lsb_release -is)"`
+
+if [ $BASE == "Ubuntu" ]
+then
 dbus-send --system --print-reply --dest=org.freedesktop.Hal \
           /org/freedesktop/Hal/devices/computer \
           org.freedesktop.Hal.Device.SystemPowerManagement.Shutdown
-          
+fi
+
+
+if [ $BASE == "Manjaro-ARM" ]
+then
+systemctl poweroff
+fi

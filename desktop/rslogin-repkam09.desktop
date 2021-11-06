@@ -3,5 +3,5 @@ Encoding=UTF-8
 Version=1.0
 Type=Application
 Terminal=false
-Exec=sleep 1 && xdotool type 'placeholder_text'
+Exec=sleep 1 && xdotool type --delay 100 `bw get password 0868937e-e1cb-4dd1-9bf8-acd20156092f`
 Name=RSLogin: repkam09

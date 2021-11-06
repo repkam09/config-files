@@ -28,5 +28,3 @@ git config --list
 mkdir -p ~/.local/bin/
 chmod +x ./bin/*
 cp ./bin/* ~/.local/bin/
-
-echo "Make sure to add  ~/.local/bin/ to your PATH"

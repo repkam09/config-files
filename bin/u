@@ -1,7 +1,7 @@
 #!/bin/bash
 BASE=`echo "$(lsb_release -is)"`
 
-# MSI Laptop and Workstation
+# Framework Laptop and Workstation
 if [ $BASE == "Ubuntu" ]
 then
 sudo apt update -q
@@ -12,6 +12,12 @@ fi
 
 # Pinebook Pro
 if [ $BASE == "Manjaro-ARM" ]
+then
+sudo pacman -Syu 
+fi
+
+# Other
+if [ $BASE == "Manjaro" ]
 then
 sudo pacman -Syu 
 fi

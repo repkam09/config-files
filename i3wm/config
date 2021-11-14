@@ -53,6 +53,10 @@ bindsym $mod+r exec --no-startup-id runescape-launcher
 # start gnome-controlcenter
 bindsym $mod+v exec --no-startup-id gnome-control-center
 
+# Screenshot current window
+bindsym $mod+Print exec --no-startup-id gnome-screenshot
+bindsym $mod+shift+Print exec --no-startup-id gnome-screenshot -w 
+
 # lock screen with i3lock
 bindsym $mod+l exec --no-startup-id i3lock-fancy 
 
@@ -139,31 +143,45 @@ bindsym $mod+Shift+9 move container to workspace number $ws9
 bindsym $mod+Shift+0 move container to workspace number $ws10
 
 # reload the configuration file
-bindsym $mod+Shift+c reload
+bindsym $mod+Shift+c reload 
+
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
-bindsym $mod+Shift+r restart
+bindsym $mod+Shift+r exec "i3-nagbar -t warning -m 'Would you like to restart i3wm?' -B 'Yes' 'i3-msg restart'"
+
 # exit i3 (logs you out of your X session)
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Would you like to shutdown mark-workstation?' -B 'Yes' 'rep-shutdown'"
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Would you like to exit i3wm?' -B 'Yes' 'i3-msg exit'"
 
 # Custom Window Overrides
 for_window [class="Blueman-manager"] floating enable border normal 
 for_window [class="Gnome-control-center"] floating enable border normal
 for_window [class="Gnome-system-monitor"] floating enable border normal
 
+# Window Decorations
+# class                 border  bground text    indicator child_border
+client.focused          #304830 #304830 #FFFFFF #2E9EF4   #304830
+client.focused_inactive #333333 #5F676A #FFFFFF #484E50   #5F676A
+client.unfocused        #333333 #222222 #888888 #292D2E   #222222
+client.urgent           #2F343A #900000 #FFFFFF #900000   #900000
+client.placeholder      #000000 #0C0C0C #FFFFFF #000000   #0C0C0C
+
+client.background       #FFFFFF
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
-        status_command i3status --config $HOME/.config/i3/i3status.conf
-    	tray_output DisplayPort-0
-        workspace_buttons yes
-        colors {
-		statusline #FFFFFF
-                background #000000
-                focused_workspace $gray2 $gray2 #FFFFFF
-                inactive_workspace $000000 $000000 #333333
-    	}
+    status_command i3status --config $HOME/.config/i3/i3status.conf
+    tray_output primary
+    workspace_buttons yes
+    colors {
+            background #000000
+            statusline #FFFFFF
+            separator  #c0c0c0
 
+            focused_workspace  #486030 #486030 #FFFFFF
+            active_workspace   #333333 #222222 #FFFFFF
+            inactive_workspace #333333 #222222 #888888
+            urgent_workspace   #2F343A #900000 #FFFFFF
+    }
 }
 
 # xss-lock grabs a logind suspend inhibit lock and will use i3lock to lock the
@@ -174,6 +192,7 @@ exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
 # and nm-applet is a desktop environment-independent system tray GUI for it.
 exec --no-startup-id nm-applet
 exec --no-startup-id blueman-applet
+
 #exec --no-startup-id pacmd set-default-sink "alsa_output.pci-0000_0f_00.4.analog-stereo"
 exec --no-startup-id feh --bg-scale $HOME/.config/i3/bgimage.jpg
 

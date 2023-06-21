@@ -1,0 +1,20 @@
+Host workstation.local
+  HostName workstation.local.repkam09.com
+  IdentityFile ~/.ssh/id_rsa
+
+Host fractal.local
+  HostName fractal.local.repkam09.com
+  IdentityFile ~/.ssh/id_rsa
+
+Host bitovi.local
+  HostName bitovi.local.repkam09.com
+  IdentityFile ~/.ssh/id_rsa
+
+Host framework.local
+  HostName framework.local.repkam09.com
+  IdentityFile ~/.ssh/id_rsa
+
+Host deck.local
+  HostName deck.local.repkam09.com
+  IdentityFile ~/.ssh/id_rsa
+  User deck

@@ -2,19 +2,59 @@ Host workstation.local
   HostName workstation.local.repkam09.com
   IdentityFile ~/.ssh/id_rsa
 
+Host workstation.tail
+  HostName workstation.tail.repkam09.com
+  IdentityFile ~/.ssh/id_rsa
+
 Host fractal.local
   HostName fractal.local.repkam09.com
+  IdentityFile ~/.ssh/id_rsa
+
+Host fractal.tail
+  HostName fractal.tail.repkam09.com
+  IdentityFile ~/.ssh/id_rsa  
+
+Host perlin.local
+  HostName perlin.local.repkam09.com
+  IdentityFile ~/.ssh/id_rsa
+
+Host perlin.tail
+  HostName perlin.tail.repkam09.com
+  IdentityFile ~/.ssh/id_rsa  
+
+Host cube.local
+  HostName cube.local.repkam09.com
+  IdentityFile ~/.ssh/id_rsa
+
+Host cube.tail
+  HostName cube.tail.repkam09.com
   IdentityFile ~/.ssh/id_rsa
 
 Host bitovi.local
   HostName bitovi.local.repkam09.com
   IdentityFile ~/.ssh/id_rsa
 
+Host bitovi.tail
+  HostName bitovi.tail.repkam09.com
+  IdentityFile ~/.ssh/id_rsa
+
 Host framework.local
   HostName framework.local.repkam09.com
+  IdentityFile ~/.ssh/id_rsa
+
+Host framework.tail
+  HostName framework.tail.repkam09.com
   IdentityFile ~/.ssh/id_rsa
 
 Host deck.local
   HostName deck.local.repkam09.com
   IdentityFile ~/.ssh/id_rsa
   User deck
+
+Host carvellfamilycrafts.farm
+  HostName carvellfamilycrafts.farm
+  IdentityFile ~/.ssh/id_rsa
+
+Host carvell.tail.repkam09.com
+  HostName carvell.tail.repkam09.com
+  IdentityFile ~/.ssh/id_rsa

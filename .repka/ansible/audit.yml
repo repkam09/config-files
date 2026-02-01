@@ -1,0 +1,51 @@
+---
+- name: audit updates
+  hosts: servers
+  become: true
+  become_method: sudo
+  gather_facts: true
+
+  vars:
+    docker_packages:
+      - docker-ce
+
+  tasks:
+    - name: apt update
+      ansible.builtin.apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: check upgradable packages
+      ansible.builtin.shell: |
+        apt list --upgradable 2>/dev/null || true
+      register: upgradable_output
+      changed_when: false
+
+    - name: print upgradable packages
+      ansible.builtin.debug:
+        msg: |
+          Host: {{ inventory_hostname }}
+          Upgradable packages:
+          {{ upgradable_output.stdout | default('(none)') }}
+
+    - name: check for docker updates
+      ansible.builtin.set_fact:
+        docker_update_available: >-
+          {{
+            docker_packages | select('in', upgradable_output.stdout | default(''))
+            | list | length > 0
+          }}
+
+    - name: flag docker updates
+      ansible.builtin.debug:
+        msg: |
+          Host: {{ inventory_hostname }}
+          WARNING: Docker-related package(s) appear upgradable on this host.
+      when: docker_update_available
+
+    - name: no docker updates message
+      ansible.builtin.debug:
+        msg: |
+          Host: {{ inventory_hostname }}
+          No docker-related updates detected.
+      when: not docker_update_available

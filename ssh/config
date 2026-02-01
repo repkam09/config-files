@@ -1,0 +1,44 @@
+Host fractal.tail
+  HostName 100.65.251.100
+  IdentityFile ~/.ssh/id_rsa
+
+Host perlin.tail
+  HostName 100.109.46.40
+  IdentityFile ~/.ssh/id_rsa  
+
+Host cube.tail
+  HostName 100.69.61.62
+  IdentityFile ~/.ssh/id_rsa
+
+Host bitovi.tail
+  HostName 100.116.239.57
+  IdentityFile ~/.ssh/id_rsa
+
+Host framework.tail
+  HostName 100.64.28.50
+  IdentityFile ~/.ssh/id_rsa
+
+Host carvell.tail
+  HostName 100.124.95.22
+  IdentityFile ~/.ssh/id_rsa
+
+Host bridge.tail
+  HostName 100.103.61.82
+  IdentityFile ~/.ssh/id_rsa
+
+Host hennos.tail
+  HostName 100.118.11.78
+  IdentityFile ~/.ssh/id_rsa
+
+Host desktop.tail
+  HostName 100.104.126.88
+  IdentityFile ~/.ssh/id_rsa
+
+Host node.tail
+  HostName 100.120.225.70
+  IdentityFile ~/.ssh/id_rsa
+
+Host square.tail
+  HostName 100.110.116.40
+  IdentityFile ~/.ssh/id_rsa
+

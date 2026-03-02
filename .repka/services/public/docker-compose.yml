@@ -1,0 +1,16 @@
+services:
+  caddy:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: caddy
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - 80:80
+      - 443:443
+      - 100.109.46.40:2019:2019
+    volumes:
+      - ./config/etc:/etc/caddy
+      - ./config/sites:/sites:ro

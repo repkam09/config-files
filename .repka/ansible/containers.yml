@@ -1,0 +1,13 @@
+---
+- name: Collect running containers
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Run docker ps
+      command: docker ps --format {% raw %}"table {{.Names}}\t{{.Image}}\t{{.Status}}"{% endraw %}
+      register: docker_output
+      changed_when: false
+
+    - name: Show containers
+      debug:
+        msg: "{{ docker_output.stdout_lines }}"

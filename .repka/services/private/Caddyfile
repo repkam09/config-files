@@ -1,0 +1,113 @@
+{
+	storage file_system {
+		root /etc/caddy
+	}
+
+	email {env.CADDY_USER_EMAIL}
+	acme_dns porkbun {
+		api_key {env.PORKBUN_API_KEY}
+		api_secret_key {env.PORKBUN_API_SECRET_KEY}
+	}
+}
+
+repkam09.dev {
+	# Serve static files
+	root * /sites/default/
+	file_server
+}
+
+localhost {
+	# Serve static files
+	root * /sites/local/
+	file_server
+}
+
+*.repkam09.dev {
+	encode zstd gzip
+
+	@api host api.repkam09.dev
+	handle @api {
+		reverse_proxy {
+			to 100.116.239.57:16001
+			transport http
+		}
+	}
+
+	@home host home.repkam09.dev
+	handle @home {
+		reverse_proxy {
+			to 100.109.46.40:8123
+			transport http
+		}
+	}
+
+	@search host search.repkam09.dev
+	handle @search {
+		reverse_proxy {
+			to 100.69.61.62:16006
+			transport http
+		}
+	}
+
+	@internal host status-internal.repkam09.dev
+	handle @internal {
+		reverse_proxy {
+			to 100.69.61.62:3001
+			transport http
+		}
+	}
+
+	@external host status-external.repkam09.dev
+	handle @external {
+		reverse_proxy {
+			to 100.120.225.70:3001
+			transport http
+		}
+	}
+
+	@chatgpt host gpt.repkam09.dev
+	handle @chatgpt {
+		reverse_proxy {
+			to 100.65.251.100:16008
+			transport http
+		}
+	}
+
+	@docker host docker.repkam09.dev
+	handle @docker {
+		reverse_proxy {
+			to 100.82.225.5:16007
+			transport http
+		}
+	}
+
+	@temporal host temporal.repkam09.dev
+	handle @temporal {
+		reverse_proxy {
+			to 100.65.251.100:8233
+			transport http
+		}
+	}
+
+	@media host media.repkam09.dev
+	handle @media {
+		reverse_proxy {
+			to 100.65.251.100:8096
+			transport http
+		}
+	}
+
+	@tesseract host tesseract.repkam09.dev
+	handle @tesseract {
+		reverse_proxy {
+			to 100.82.225.5:5000
+			transport http
+		}
+	}
+
+	handle {
+		header Content-Type text/plain
+		templates
+		respond "OK"
+	}
+}

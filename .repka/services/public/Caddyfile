@@ -1,0 +1,70 @@
+{
+	storage file_system {
+		root /etc/caddy
+	}
+
+	email {env.CADDY_USER_EMAIL}
+	acme_dns porkbun {
+		api_key {env.PORKBUN_API_KEY}
+		api_secret_key {env.PORKBUN_API_SECRET_KEY}
+	}
+}
+
+*.repkam09.com {
+	encode zstd gzip
+
+	@api host api.repkam09.com
+	handle @api {
+		reverse_proxy {
+			to 10.0.4.119:16001
+			transport http
+		}
+	}
+
+	@media host media.repkam09.com
+	handle @media {
+		reverse_proxy {
+			to 10.0.4.119:8096
+			transport http
+		}
+	}
+
+	@req host request.repkam09.com
+	handle @req {
+		reverse_proxy {
+			to 10.0.4.119:5055
+		}
+	}
+
+	@nas host nas.repkam09.com
+	handle @nas {
+		reverse_proxy {
+			to 10.0.4.118:5000
+		}
+	}
+
+	@net host net.repkam09.com
+	handle @net {
+		reverse_proxy {
+			to 10.0.4.1:8000
+		}
+	}
+
+	@minecraft host mc.repkam09.com
+	handle @minecraft {
+		reverse_proxy {
+			to 10.0.4.4:8100
+		}
+	}
+
+	handle {
+		abort
+	}
+}
+
+localhost {
+	encode zstd gzip
+	header Content-Type text/plain
+	templates
+	respond "Caddy is running!"
+}

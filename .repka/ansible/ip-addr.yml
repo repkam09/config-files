@@ -1,0 +1,13 @@
+---
+- name: Collect LAN IPs
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Find 10.0.4.x address
+      set_fact:
+        lan_ip: >-
+          {{ ansible_all_ipv4_addresses | select('match', '^10\.0\.4\.') | first | default('not found') }}
+
+    - name: Print inventory IP → LAN IP mapping
+      debug:
+        msg: "{{ inventory_hostname }} ({{ ansible_host }}) → {{ lan_ip }}"

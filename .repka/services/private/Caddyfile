@@ -105,6 +105,14 @@ localhost {
 		}
 	}
 
+	@logs host logs.repkam09.dev
+	handle @logs {
+			reverse_proxy {
+					to 100.120.225.70:5080
+					transport http
+			}
+	}
+
 	handle {
 		header Content-Type text/plain
 		templates

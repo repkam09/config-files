@@ -1,0 +1,62 @@
+---
+- name: Remove OpenObserve otel-collector agent
+  hosts: servers
+  become: true
+  become_method: sudo
+  gather_facts: true
+
+  tasks:
+    - name: Check if otel-config.yaml exists
+      ansible.builtin.stat:
+        path: /etc/otel-config.yaml
+      register: otel_config
+
+    - name: Stop otel-collector service
+      ansible.builtin.systemd:
+        name: otel-collector
+        state: stopped
+      when: otel_config.stat.exists
+      ignore_errors: true
+
+    - name: Disable otel-collector service
+      ansible.builtin.systemd:
+        name: otel-collector
+        enabled: false
+      when: otel_config.stat.exists
+      ignore_errors: true
+
+    - name: Remove otel-collector systemd unit file
+      ansible.builtin.file:
+        path: /etc/systemd/system/otel-collector.service
+        state: absent
+      when: otel_config.stat.exists
+
+    - name: Reload systemd daemon
+      ansible.builtin.systemd:
+        daemon_reload: true
+      when: otel_config.stat.exists
+
+    - name: Remove otelcol-contrib binary
+      ansible.builtin.file:
+        path: /usr/local/bin/otelcol-contrib
+        state: absent
+      when: otel_config.stat.exists
+
+    - name: Remove openobserve-agent user
+      ansible.builtin.user:
+        name: openobserve-agent
+        state: absent
+        remove: true
+      when: otel_config.stat.exists
+
+    - name: Remove openobserve-agent group
+      ansible.builtin.group:
+        name: openobserve-agent
+        state: absent
+      when: otel_config.stat.exists
+
+    - name: Remove otel-config.yaml
+      ansible.builtin.file:
+        path: /etc/otel-config.yaml
+        state: absent
+      when: otel_config.stat.exists

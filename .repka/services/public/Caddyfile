@@ -10,6 +10,22 @@
 	}
 }
 
+*.hennos.app {
+	encode zstd gzip
+
+	@hennos host bot.hennos.app
+	handle @hennos {
+		reverse_proxy {
+			to 100.109.46.40:16006
+			transport http
+		}
+	}
+
+	handle {
+		abort
+	}
+}
+
 *.repkam09.com {
 	encode zstd gzip
 

@@ -16,6 +16,22 @@ repkam09.dev {
 	file_server
 }
 
+*.hennos.app {
+	encode zstd gzip
+
+	@hennos host bot.hennos.app
+	handle @hennos {
+		reverse_proxy {
+			to 100.109.46.40:16006
+			transport http
+		}
+	}
+
+	handle {
+		abort
+	}
+}
+
 localhost {
 	# Serve static files
 	root * /sites/local/
@@ -103,14 +119,6 @@ localhost {
 			to 100.82.225.5:5000
 			transport http
 		}
-	}
-
-	@logs host logs.repkam09.dev
-	handle @logs {
-			reverse_proxy {
-					to 100.120.225.70:5080
-					transport http
-			}
 	}
 
 	handle {

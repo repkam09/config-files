@@ -60,7 +60,7 @@ localhost {
 	@search host search.repkam09.dev
 	handle @search {
 		reverse_proxy {
-			to 100.69.61.62:16006
+			to 100.65.251.100:16006
 			transport http
 		}
 	}
@@ -101,6 +101,14 @@ localhost {
 	handle @temporal {
 		reverse_proxy {
 			to 100.65.251.100:8233
+			transport http
+		}
+	}
+
+	@net host net.repkam09.dev
+	handle @net {
+		reverse_proxy {
+			to 100.124.196.23:8000
 			transport http
 		}
 	}

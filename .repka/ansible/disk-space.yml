@@ -1,0 +1,15 @@
+---
+- name: show disk space
+  hosts: servers
+  gather_facts: false
+
+  tasks:
+    - name: df -h
+      ansible.builtin.command: df -h
+      register: df_output
+      changed_when: false
+
+    - name: print output
+      ansible.builtin.debug:
+        msg: "{{ df_output.stdout_lines }}"
+

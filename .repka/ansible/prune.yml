@@ -1,0 +1,23 @@
+---
+- name: docker system prune
+  hosts: servers
+  gather_facts: false
+
+  tasks:
+    - name: check if docker is running
+      ansible.builtin.systemd:
+        name: docker
+      register: docker_status
+      ignore_errors: true
+
+    - name: prune docker
+      ansible.builtin.command: docker system prune -a --force
+      register: prune_output
+      changed_when: "'Total reclaimed space: 0B' not in prune_output.stdout"
+      when: docker_status.status.ActiveState == "active"
+
+    - name: print output
+      ansible.builtin.debug:
+        msg: "{{ prune_output.stdout_lines }}"
+      when: docker_status.status.ActiveState == "active"
+

@@ -49,14 +49,6 @@ localhost {
 		}
 	}
 
-	@trek host trek.repkam09.dev
-	handle @trek {
-		reverse_proxy {
-			to 100.109.46.40:3000
-			transport http
-		}
-	}
-
 	@home host home.repkam09.dev
 	handle @home {
 		reverse_proxy {

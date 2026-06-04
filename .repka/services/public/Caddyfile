@@ -21,6 +21,14 @@
 		}
 	}
 
+	@trek host trek.repkam09.com
+	handle @trek {
+		reverse_proxy {
+			to 10.0.4.112:3000
+			transport http
+		}
+	}
+
 	@media host media.repkam09.com
 	handle @media {
 		reverse_proxy {

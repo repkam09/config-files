@@ -10,7 +10,7 @@ Host gitlab.com
 Host github.com
   Hostname github.com
   User git
-  IdentityFile ~/.ssh/id_rsa
+  IdentityFile ~/.ssh/repkam09
   IdentitiesOnly yes  
 
 # ===================================================
@@ -18,39 +18,43 @@ Host github.com
 # ===================================================
 Host fractal.tail
   HostName 100.65.251.100
-  IdentityFile ~/.ssh/id_rsa
+  IdentityFile ~/.ssh/repkam09
 
 Host perlin.tail
   HostName 100.109.46.40
-  IdentityFile ~/.ssh/id_rsa  
+  IdentityFile ~/.ssh/repkam09  
 
 Host cube.tail
   HostName 100.69.61.62
-  IdentityFile ~/.ssh/id_rsa
+  IdentityFile ~/.ssh/repkam09
 
 Host framework.tail
   HostName 100.64.28.50
-  IdentityFile ~/.ssh/id_rsa
+  IdentityFile ~/.ssh/repkam09
 
 Host bridge.tail
   HostName 100.103.61.82
-  IdentityFile ~/.ssh/id_rsa
+  IdentityFile ~/.ssh/repkam09
 
 Host hennos.tail
   HostName 100.118.11.78
-  IdentityFile ~/.ssh/id_rsa
+  IdentityFile ~/.ssh/repkam09
 
 Host desktop.tail
   HostName 100.104.126.88
-  IdentityFile ~/.ssh/id_rsa
+  IdentityFile ~/.ssh/repkam09
 
 Host node.tail
   HostName 100.120.225.70
-  IdentityFile ~/.ssh/id_rsa
+  IdentityFile ~/.ssh/repkam09
 
 Host square.tail
   HostName 100.110.116.40
-  IdentityFile ~/.ssh/id_rsa
+  IdentityFile ~/.ssh/repkam09
+
+Host square.local
+  HostName 10.0.4.38
+  IdentityFile ~/.ssh/repkam09
 
 
 # ===================================================
@@ -58,4 +62,4 @@ Host square.tail
 # ===================================================
 Host carvellfamilycrafts
   HostName carvellfamilycrafts.farm
-  IdentityFile ~/.ssh/id_rsa
+  IdentityFile ~/.ssh/repkam09

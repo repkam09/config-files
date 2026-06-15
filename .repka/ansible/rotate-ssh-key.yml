@@ -1,0 +1,37 @@
+---
+- name: Rotate SSH keys
+  hosts: all
+  vars:
+    new_public_key: "{{ lookup('file', '../../ssh/repkam09.pub') }}"
+
+  tasks:
+    - name: Reset authorized_keys to only the new key
+      ansible.builtin.authorized_key:
+        user: "{{ ansible_user }}"
+        key: "{{ new_public_key }}"
+        exclusive: true # removes all other keys
+        state: present
+
+    - name: Remove known_hosts on remote (optional)
+      ansible.builtin.file:
+        path: "~/.ssh/known_hosts"
+        state: absent
+
+    - name: Remove known_hosts.old on remote (optional)
+      ansible.builtin.file:
+        path: "~/.ssh/known_hosts.old"
+        state: absent
+
+    - name: Remove old RSA key files
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "~/.ssh/id_rsa"
+        - "~/.ssh/id_rsa.pub"
+
+    - name: Copy new ssh configuration to remote
+      ansible.builtin.copy:
+        src: "../../ssh/config"
+        dest: "~/.ssh/config"
+        mode: "0600"

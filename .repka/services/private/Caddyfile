@@ -129,6 +129,14 @@ localhost {
 		}
 	}
 
+	@notes host notes.repkam09.dev
+	handle @notes {
+		reverse_proxy {
+			to 100.109.46.40:16009
+			transport http
+		}
+	}
+
 	handle {
 		header Content-Type text/plain
 		templates

@@ -1,0 +1,66 @@
+---
+- name: enable unattended security upgrades
+  hosts: servers
+  become: true
+  become_method: sudo
+  gather_facts: true
+
+  tasks:
+    - name: install unattended-upgrades
+      ansible.builtin.apt:
+        name:
+          - unattended-upgrades
+          - apt-listchanges
+        state: present
+        update_cache: yes
+        cache_valid_time: 3600
+
+    # The distro ships a correct, per-release Allowed-Origins/Origins-Pattern in
+    # 50unattended-upgrades that already enables security. A previous version of
+    # this playbook wrote a hand-rolled origins file that crashed u-u on parse;
+    # remove it so hosts that ran that version self-heal.
+    - name: remove obsolete hand-rolled origins override
+      ansible.builtin.file:
+        path: /etc/apt/apt.conf.d/52unattended-upgrades-security
+        state: absent
+
+    - name: enable periodic apt tasks (20auto-upgrades)
+      ansible.builtin.copy:
+        dest: /etc/apt/apt.conf.d/20auto-upgrades
+        owner: root
+        group: root
+        mode: "0644"
+        content: |
+          APT::Periodic::Update-Package-Lists "1";
+          APT::Periodic::Unattended-Upgrade "1";
+          APT::Periodic::Download-Upgradeable-Packages "1";
+          APT::Periodic::AutocleanInterval "7";
+
+    # Safe key/value settings only — deliberately no Allowed-Origins /
+    # Origins-Pattern here, so origin selection stays with the distro default.
+    - name: apply local unattended-upgrades settings
+      ansible.builtin.copy:
+        dest: /etc/apt/apt.conf.d/52unattended-upgrades-local
+        owner: root
+        group: root
+        mode: "0644"
+        content: |
+          // Managed by Ansible (unattended-upgrades.yml).
+          Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";
+          Unattended-Upgrade::Remove-Unused-Dependencies "true";
+          Unattended-Upgrade::Automatic-Reboot "false";
+
+    - name: enable and start the unattended-upgrades service
+      ansible.builtin.systemd:
+        name: unattended-upgrades
+        enabled: true
+        state: started
+
+    - name: run a dry-run to confirm configuration is valid
+      ansible.builtin.command: unattended-upgrades --dry-run --debug
+      register: uu_dryrun
+      changed_when: false
+
+    - name: report unattended-upgrades status
+      ansible.builtin.debug:
+        msg: "{{ uu_dryrun.stdout_lines }}"

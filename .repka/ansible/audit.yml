@@ -49,3 +49,89 @@
           Host: {{ inventory_hostname }}
           No docker-related updates detected.
       when: not docker_update_available
+
+    - name: capture effective sshd configuration
+      ansible.builtin.command: /usr/sbin/sshd -T
+      register: sshd_effective_config
+      changed_when: false
+      check_mode: false
+      failed_when: false
+
+    - name: determine password-based ssh status
+      ansible.builtin.set_fact:
+        ssh_config_readable: "{{ sshd_effective_config.rc == 0 }}"
+        ssh_auth_lines: >-
+          {{
+            sshd_effective_config.stdout_lines | default([])
+            | select('match', '^(passwordauthentication|kbdinteractiveauthentication|challengeresponseauthentication|permitrootlogin) ')
+            | list
+          }}
+
+    - name: determine if password authentication is enabled
+      ansible.builtin.set_fact:
+        ssh_password_auth_enabled: >-
+          {{
+            ssh_auth_lines
+            | select('match', '^(passwordauthentication|kbdinteractiveauthentication|challengeresponseauthentication) yes$')
+            | list | length > 0
+          }}
+
+    - name: determine effective root login policy
+      ansible.builtin.set_fact:
+        ssh_permit_root_login: >-
+          {{
+            (
+              sshd_effective_config.stdout_lines | default([])
+              | select('match', '^permitrootlogin ') | list | first | default('permitrootlogin unknown')
+            ).split() | last
+          }}
+
+    - name: determine if root login is disabled
+      ansible.builtin.set_fact:
+        ssh_root_login_permitted: "{{ ssh_permit_root_login != 'no' }}"
+
+    - name: print ssh authentication settings
+      ansible.builtin.debug:
+        msg: |
+          Host: {{ inventory_hostname }}
+          Effective SSH auth settings: {{ ssh_auth_lines | join(', ') | default('(unavailable)', true) }}
+      when: ssh_config_readable
+
+    - name: flag password-based ssh enabled
+      ansible.builtin.debug:
+        msg: |
+          Host: {{ inventory_hostname }}
+          WARNING: Password-based SSH authentication appears to be ENABLED.
+          Set 'PasswordAuthentication no' and 'KbdInteractiveAuthentication no', checking
+          /etc/ssh/sshd_config and any overrides in /etc/ssh/sshd_config.d/*.conf, then reload sshd.
+      when: ssh_config_readable and ssh_password_auth_enabled
+
+    - name: confirm password-based ssh disabled
+      ansible.builtin.debug:
+        msg: |
+          Host: {{ inventory_hostname }}
+          OK: Password-based SSH authentication is disabled.
+      when: ssh_config_readable and not ssh_password_auth_enabled
+
+    - name: flag root login permitted over ssh
+      ansible.builtin.debug:
+        msg: |
+          Host: {{ inventory_hostname }}
+          WARNING: SSH root login is not fully disabled (PermitRootLogin {{ ssh_permit_root_login }}).
+          Set 'PermitRootLogin no' in /etc/ssh/sshd_config (and check /etc/ssh/sshd_config.d/*.conf), then reload sshd.
+      when: ssh_config_readable and ssh_root_login_permitted
+
+    - name: confirm root login disabled over ssh
+      ansible.builtin.debug:
+        msg: |
+          Host: {{ inventory_hostname }}
+          OK: SSH root login is disabled (PermitRootLogin no).
+      when: ssh_config_readable and not ssh_root_login_permitted
+
+    - name: warn if sshd configuration could not be read
+      ansible.builtin.debug:
+        msg: |
+          Host: {{ inventory_hostname }}
+          WARNING: Could not read effective sshd configuration ('sshd -T' rc={{ sshd_effective_config.rc }}).
+          Unable to verify password-based SSH status on this host.
+      when: not ssh_config_readable

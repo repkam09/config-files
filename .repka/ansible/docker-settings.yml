@@ -1,0 +1,88 @@
+---
+- name: docker settings check
+  hosts: servers
+  become: true
+  become_method: sudo
+  gather_facts: false
+
+  tasks:
+    - name: gather installed package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: determine docker installation status
+      ansible.builtin.set_fact:
+        docker_installed: >-
+          {{ 'docker-ce' in ansible_facts.packages or 'docker.io' in ansible_facts.packages }}
+
+    - name: note docker not installed
+      ansible.builtin.debug:
+        msg: |
+          Host: {{ inventory_hostname }}
+          NOTE: Docker does not appear to be installed on this host. Skipping Docker checks.
+      when: not docker_installed
+
+    - name: check for docker api exposed on tcp
+      ansible.builtin.shell: |
+        ss -H -tln 'sport = :2375 or sport = :2376' 2>/dev/null || true
+      args:
+        executable: /bin/bash
+      register: docker_tcp
+      changed_when: false
+      check_mode: false
+      when: docker_installed
+
+    - name: check docker group membership
+      ansible.builtin.command: getent group docker
+      register: docker_group
+      changed_when: false
+      check_mode: false
+      failed_when: false
+      when: docker_installed
+
+    - name: read docker daemon configuration
+      ansible.builtin.slurp:
+        src: /etc/docker/daemon.json
+      register: docker_daemon_json
+      failed_when: false
+      when: docker_installed
+
+    - name: determine docker security facts
+      ansible.builtin.set_fact:
+        docker_api_on_tcp: "{{ (docker_tcp.stdout | default('') | trim) | length > 0 }}"
+        docker_group_members: >-
+          {{ (docker_group.stdout | default('')).split(':') | last | trim }}
+      when: docker_installed
+
+    - name: flag docker api exposed on tcp
+      ansible.builtin.debug:
+        msg: |
+          Host: {{ inventory_hostname }}
+          WARNING: Docker API appears to be listening on TCP (port 2375/2376). An exposed Docker API is
+          equivalent to unauthenticated root on this host. Ensure dockerd binds only the unix socket
+          (no 'tcp://' entry in /etc/docker/daemon.json or the service's -H flags).
+          {{ docker_tcp.stdout | default('') }}
+      when: docker_installed and docker_api_on_tcp
+
+    - name: confirm docker api not on tcp
+      ansible.builtin.debug:
+        msg: |
+          Host: {{ inventory_hostname }}
+          OK: Docker API is not listening on TCP 2375/2376.
+      when: docker_installed and not docker_api_on_tcp
+
+    - name: report docker group members
+      ansible.builtin.debug:
+        msg: |
+          Host: {{ inventory_hostname }}
+          NOTE: Members of the 'docker' group have root-equivalent access to this host. Confirm each is expected.
+          docker group members: {{ docker_group_members | default('(none)', true) }}
+      when: docker_installed
+
+    - name: report docker daemon configuration
+      ansible.builtin.debug:
+        msg: |
+          Host: {{ inventory_hostname }}
+          /etc/docker/daemon.json:
+          {{ (docker_daemon_json.content | default('') | b64decode) | default('(not present — daemon running on defaults)', true) }}
+      when: docker_installed

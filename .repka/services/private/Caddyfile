@@ -27,6 +27,14 @@ repkam09.dev {
 		}
 	}
 
+	@litellm host api.hennos.app
+	handle @litellm {
+		reverse_proxy {
+			to 100.65.251.100:4000
+			transport http
+		}
+	}
+
 	handle {
 		abort
 	}

@@ -1,0 +1,92 @@
+---
+- name: firewall settings check
+  hosts: servers
+  become: true
+  become_method: sudo
+  gather_facts: false
+
+  tasks:
+    - name: gather installed package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: check ufw status
+      ansible.builtin.command: ufw status verbose
+      register: ufw_status
+      changed_when: false
+      check_mode: false
+      when: "'ufw' in ansible_facts.packages"
+
+    - name: determine ufw status
+      ansible.builtin.set_fact:
+        ufw_installed: "{{ 'ufw' in ansible_facts.packages }}"
+        ufw_active: "{{ 'Status: active' in (ufw_status.stdout | default('')) }}"
+        ufw_default_deny_incoming: "{{ 'deny (incoming)' in (ufw_status.stdout | default('')) }}"
+
+    - name: flag ufw not installed
+      ansible.builtin.debug:
+        msg: |
+          Host: {{ inventory_hostname }}
+          WARNING: ufw is not installed. Consider a host firewall: 'apt install ufw'.
+      when: not ufw_installed
+
+    - name: flag ufw inactive
+      ansible.builtin.debug:
+        msg: |
+          Host: {{ inventory_hostname }}
+          WARNING: ufw is installed but not active. Enable it AFTER allowing SSH:
+          'ufw allow OpenSSH' then 'ufw enable'.
+      when: ufw_installed and not ufw_active
+
+    - name: flag ufw not default-deny incoming
+      ansible.builtin.debug:
+        msg: |
+          Host: {{ inventory_hostname }}
+          WARNING: ufw is active but the default incoming policy is not 'deny'.
+          Set 'ufw default deny incoming'.
+      when: ufw_installed and ufw_active and not ufw_default_deny_incoming
+
+    - name: confirm ufw active and default-deny
+      ansible.builtin.debug:
+        msg: |
+          Host: {{ inventory_hostname }}
+          OK: ufw is active with a default-deny incoming policy.
+      when: ufw_installed and ufw_active and ufw_default_deny_incoming
+
+    - name: list listening sockets
+      ansible.builtin.command: ss -tulpn
+      register: listening_sockets
+      changed_when: false
+      check_mode: false
+
+    - name: identify sockets listening on all interfaces
+      ansible.builtin.set_fact:
+        wildcard_listeners: >-
+          {{
+            listening_sockets.stdout_lines | default([])
+            | select('search', '(^|\s)(0\.0\.0\.0|\[::\]|\*):[0-9]+\s')
+            | list
+          }}
+
+    - name: print listening sockets
+      ansible.builtin.debug:
+        msg: |
+          Host: {{ inventory_hostname }}
+          Listening sockets (TCP/UDP):
+          {{ listening_sockets.stdout | default('(none)', true) }}
+
+    - name: highlight sockets exposed on all interfaces
+      ansible.builtin.debug:
+        msg: |
+          Host: {{ inventory_hostname }}
+          NOTE: The following sockets listen on ALL interfaces (0.0.0.0 / [::]). Confirm each is intended:
+          {{ wildcard_listeners | join('\n') }}
+      when: wildcard_listeners | length > 0
+
+    - name: docker firewall caveat
+      ansible.builtin.debug:
+        msg: |
+          Host: {{ inventory_hostname }}
+          NOTE: On Docker hosts, containers published with '-p 0.0.0.0:PORT' insert iptables rules
+          ahead of ufw, so they are reachable even when ufw reports active/deny. Treat the listening
+          socket list above as the source of truth for exposure, and publish to 127.0.0.1 where possible.

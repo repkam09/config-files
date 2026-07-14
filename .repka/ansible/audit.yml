@@ -1,5 +1,5 @@
 ---
-- name: audit updates
+- name: security audit
   hosts: servers
   become: true
   become_method: sudo
@@ -63,7 +63,7 @@
         ssh_auth_lines: >-
           {{
             sshd_effective_config.stdout_lines | default([])
-            | select('match', '^(passwordauthentication|kbdinteractiveauthentication|challengeresponseauthentication|permitrootlogin) ')
+            | select('match', '^(passwordauthentication|kbdinteractiveauthentication|challengeresponseauthentication|permitrootlogin|permitemptypasswords|maxauthtries|allowusers|allowgroups) ')
             | list
           }}
 
@@ -89,6 +89,26 @@
     - name: determine if root login is disabled
       ansible.builtin.set_fact:
         ssh_root_login_permitted: "{{ ssh_permit_root_login != 'no' }}"
+
+    - name: determine additional sshd hardening settings
+      ansible.builtin.set_fact:
+        ssh_permit_empty_passwords: >-
+          {{
+            sshd_effective_config.stdout_lines | default([])
+            | select('match', '^permitemptypasswords yes$') | list | length > 0
+          }}
+        ssh_max_auth_tries: >-
+          {{
+            (
+              sshd_effective_config.stdout_lines | default([])
+              | select('match', '^maxauthtries ') | list | first | default('maxauthtries 6')
+            ).split() | last | int
+          }}
+        ssh_access_restricted: >-
+          {{
+            sshd_effective_config.stdout_lines | default([])
+            | select('match', '^(allowusers|allowgroups) ') | list | length > 0
+          }}
 
     - name: print ssh authentication settings
       ansible.builtin.debug:
@@ -128,6 +148,28 @@
           OK: SSH root login is disabled (PermitRootLogin no).
       when: ssh_config_readable and not ssh_root_login_permitted
 
+    - name: flag empty passwords permitted over ssh
+      ansible.builtin.debug:
+        msg: |
+          Host: {{ inventory_hostname }}
+          WARNING: SSH PermitEmptyPasswords is enabled. Set 'PermitEmptyPasswords no'.
+      when: ssh_config_readable and ssh_permit_empty_passwords
+
+    - name: flag high ssh maxauthtries
+      ansible.builtin.debug:
+        msg: |
+          Host: {{ inventory_hostname }}
+          WARNING: SSH MaxAuthTries is {{ ssh_max_auth_tries }} (recommend <= 4). Lower it in sshd config.
+      when: ssh_config_readable and ssh_max_auth_tries > 4
+
+    - name: note ssh access not restricted to specific users
+      ansible.builtin.debug:
+        msg: |
+          Host: {{ inventory_hostname }}
+          NOTE: SSH is not restricted to specific users/groups. Consider 'AllowUsers {{ ansible_user | default('mark') }}'
+          (or AllowGroups) to limit who can log in.
+      when: ssh_config_readable and not ssh_access_restricted
+
     - name: warn if sshd configuration could not be read
       ansible.builtin.debug:
         msg: |
@@ -135,3 +177,38 @@
           WARNING: Could not read effective sshd configuration ('sshd -T' rc={{ sshd_effective_config.rc }}).
           Unable to verify password-based SSH status on this host.
       when: not ssh_config_readable
+
+    - name: gather installed package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: gather service facts
+      ansible.builtin.service_facts:
+
+    - name: determine fail2ban status
+      ansible.builtin.set_fact:
+        fail2ban_installed: "{{ 'fail2ban' in ansible_facts.packages }}"
+        fail2ban_active: >-
+          {{ ((ansible_facts.services['fail2ban.service'] | default({})).state | default('')) == 'running' }}
+
+    - name: confirm fail2ban installed and active
+      ansible.builtin.debug:
+        msg: |
+          Host: {{ inventory_hostname }}
+          OK: fail2ban is installed and active.
+      when: fail2ban_installed and fail2ban_active
+
+    - name: flag fail2ban installed but not active
+      ansible.builtin.debug:
+        msg: |
+          Host: {{ inventory_hostname }}
+          WARNING: fail2ban is installed but not running. Enable and start it:
+          'systemctl enable --now fail2ban'.
+      when: fail2ban_installed and not fail2ban_active
+
+    - name: flag fail2ban not installed
+      ansible.builtin.debug:
+        msg: |
+          Host: {{ inventory_hostname }}
+          WARNING: fail2ban is not installed. Install it: 'apt install fail2ban'.
+      when: not fail2ban_installed

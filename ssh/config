@@ -52,10 +52,13 @@ Host square.tail
   HostName 100.110.116.40
   IdentityFile ~/.ssh/repkam09
 
+Host gpd.tail
+  HostName 100.67.118.64
+  IdentityFile ~/.ssh/repkam09
+
 Host square.local
   HostName 10.0.4.38
   IdentityFile ~/.ssh/repkam09
-
 
 # ===================================================
 # Other Hosts Config

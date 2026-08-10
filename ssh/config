@@ -66,3 +66,9 @@ Host square.local
 Host carvellfamilycrafts
   HostName carvellfamilycrafts.farm
   IdentityFile ~/.ssh/repkam09
+
+# ===================================================
+# Privacy Options
+# ===================================================
+Host *
+  PubkeyAuthentication no

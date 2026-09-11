@@ -137,10 +137,10 @@ localhost {
 		}
 	}
 
-	@notes host notes.repkam09.dev
-	handle @notes {
+	@paseo host paseo.repkam09.dev
+	handle @paseo {
 		reverse_proxy {
-			to 100.109.46.40:16009
+			to 100.109.46.40:6767
 			transport http
 		}
 	}

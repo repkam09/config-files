@@ -1,0 +1,18 @@
+---
+- name: Check Ubuntu versions
+  hosts: servers
+  gather_facts: true
+
+  tasks:
+    - name: Run lsb_release -a
+      ansible.builtin.command: lsb_release -a
+      register: lsb_release_output
+      changed_when: false
+      when: ansible_system == 'Linux'
+
+    - name: Print Ubuntu version
+      ansible.builtin.debug:
+        msg: |
+          Host: {{ inventory_hostname }}
+          {{ lsb_release_output.stdout }}
+      when: ansible_system == 'Linux'

@@ -26,7 +26,13 @@ Host perlin.tail
 
 Host cube.tail
   HostName 100.69.61.62
+  User mark
   IdentityFile ~/.ssh/repkam09
+
+Host cube.local
+  HostName 10.0.4.4
+  User mark
+  IdentityFile ~/.ssh/repkam09  
 
 Host framework.tail
   HostName 100.64.28.50
@@ -48,16 +54,21 @@ Host node.tail
   HostName 100.120.225.70
   IdentityFile ~/.ssh/repkam09
 
+  Host node
+  HostName 178.62.204.41
+  IdentityFile ~/.ssh/repkam09
+  PubkeyAuthentication yes  
+
 Host square.tail
   HostName 100.110.116.40
   IdentityFile ~/.ssh/repkam09
 
-Host gpd.tail
-  HostName 100.67.118.64
+  Host square.local
+  HostName 10.0.4.38
   IdentityFile ~/.ssh/repkam09
 
-Host square.local
-  HostName 10.0.4.38
+Host gpd.tail
+  HostName 100.67.118.64
   IdentityFile ~/.ssh/repkam09
 
 # ===================================================
@@ -66,9 +77,3 @@ Host square.local
 Host carvellfamilycrafts
   HostName carvellfamilycrafts.farm
   IdentityFile ~/.ssh/repkam09
-
-# ===================================================
-# Privacy Options
-# ===================================================
-Host *
-  PubkeyAuthentication no

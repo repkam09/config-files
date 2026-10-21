@@ -56,6 +56,10 @@ Host gpd.tail
   HostName 100.67.118.64
   IdentityFile ~/.ssh/repkam09
 
+Host frameboard.tail
+  HostName 100.111.154.92
+  IdentityFile ~/.ssh/repkam09
+
 Host square.local
   HostName 10.0.4.38
   IdentityFile ~/.ssh/repkam09

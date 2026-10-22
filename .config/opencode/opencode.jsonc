@@ -1,0 +1,171 @@
+{
+    "$schema": "https://opencode.ai/config.json",
+    "provider": {
+        "bitovi": {
+            "npm": "@ai-sdk/openai-compatible",
+            "name": "Bitovi",
+            "options": {
+                "baseURL": "https://llm-proxy.bitovi-tools.com"
+            },
+            "models": {
+                "claude-sonnet-5": {
+                    "name": "Claude Sonnet 5",
+                    "limit": {
+                        "context": 1000000,
+                        "output": 128000
+                    },
+                    "cost": {
+                        "input": 2.2000,
+                        "output": 11.0000
+                    }
+                },
+                "claude-sonnet-4-6": {
+                    "name": "Claude Sonnet 4.6",
+                    "limit": {
+                        "context": 1000000,
+                        "output": 64000
+                    },
+                    "cost": {
+                        "input": 3.30,
+                        "output": 16.50
+                    }
+                },
+                "claude-opus-4-8": {
+                    "name": "Claude Opus 4.8",
+                    "limit": {
+                        "context": 1000000,
+                        "output": 128000
+                    },
+                    "cost": {
+                        "input": 5.0,
+                        "output": 27.50
+                    }
+                },
+                "claude-haiku-4-5": {
+                    "name": "Claude Haiku 4.5",
+                    "limit": {
+                        "context": 200000,
+                        "output": 64000
+                    },
+                    "cost": {
+                        "input": 1.10,
+                        "output": 5.50
+                    }
+                },
+                "qwen3-coder-30b-a3b": {
+                    "name": "Qwen3 Coder 30B A3B",
+                    "limit": {
+                        "context": 262144,
+                        "output": 131072
+                    },
+                    "cost": {
+                        "input": 0.15,
+                        "output": 0.60
+                    }
+                },
+                "qwen3-coder-480b-a35b": {
+                    "name": "Qwen3 Coder 480B A35B",
+                    "limit": {
+                        "context": 262000,
+                        "output": 65536
+                    },
+                    "cost": {
+                        "input": 0.22,
+                        "output": 1.80
+                    }
+                },
+                "devstral-2-123b": {
+                    "name": "Devstral 2.123B",
+                    "limit": {
+                        "context": 256000,
+                        "output": 8192
+                    },
+                    "cost": {
+                        "input": 0.40,
+                        "output": 2.00
+                    }
+                },
+                "kimi-k2.5": {
+                    "name": "Kimi K2.5",
+                    "limit": {
+                        "context": 262144,
+                        "output": 262144
+                    },
+                    "cost": {
+                        "input": 0.60,
+                        "output": 3.00
+                    }
+                },
+                "minimax-m2.5": {
+                    "name": "Minimax M2.5",
+                    "limit": {
+                        "context": 1000000,
+                        "output": 8192
+                    },
+                    "cost": {
+                        "input": 0.30,
+                        "output": 1.20
+                    }
+                },
+                "gemma-4-31b": {
+                    "name": "Gemma 4 31B",
+                    "limit": {
+                        "context": 256000,
+                        "output": 262144
+                    },
+                    "cost": {
+                        "input": 0.14,
+                        "output": 0.40
+                    }
+                },
+                "claude-opus-5": {
+                    "name": "Claude Opus 5",
+                    "limit": {
+                        "context": 1000000,
+                        "output": 128000
+                    },
+                    "cost": {
+                        "input": 5.50,
+                        "output": 27.50
+                    }
+                }
+            }
+        },
+        "ollama": {
+            "npm": "@ai-sdk/openai-compatible",
+            "name": "Ollama",
+            "options": {
+                "baseURL": "http://localhost:11434/v1"
+            },
+            "models": {
+                "gemma4:31b": {
+                    "name": "Gemma 4 (31B)"
+                },
+                "gemma4:e4b": {
+                    "name": "Gemma 4 (E4B)"
+                },
+                "devstral:latest": {
+                    "name": "Devstral (latest)"
+                },
+                "deepcoder:1.5b": {
+                    "name": "DeepCoder (1.5B)"
+                },
+                "qwen3.5:9b": {
+                    "name": "Qwen 3.5 (9B)"
+                },
+                "qwen3.5:4b": {
+                    "name": "Qwen 3.5 (4B)"
+                },
+                "cogito:3b": {
+                    "name": "Cogito (3B)"
+                },
+                "ministral-3:14b": {
+                    "name": "Ministral 3 (14B)"
+                },
+                "cogito:14b": {
+                    "name": "Cogito (14B)"
+                }
+            }
+        }
+    }
+}

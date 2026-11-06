@@ -11,8 +11,16 @@
         update_cache: yes
         cache_valid_time: 3600
 
-    - name: apt upgrade
-      ansible.builtin.apt:
-        upgrade: yes
-        autoremove: yes
-        autoclean: yes
+    - name: check upgradable packages
+      ansible.builtin.shell: |
+        apt list --upgradable 2>/dev/null || true
+      register: upgradable_output
+      changed_when: false
+
+    - name: print upgradable packages
+      ansible.builtin.debug:
+        msg: |
+          Host: {{ inventory_hostname }}
+          Upgradable packages:
+          {{ upgradable_output.stdout | default('(none)') }}
+

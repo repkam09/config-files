@@ -1,0 +1,73 @@
+---
+- name: check unattended security upgrades
+  hosts: servers
+  gather_facts: true
+
+  tasks:
+    - name: check unattended-upgrades package is installed
+      ansible.builtin.command: dpkg-query -W -f='${Status}' unattended-upgrades
+      register: uu_pkg
+      changed_when: false
+      failed_when: false
+
+    - name: dump effective apt configuration
+      ansible.builtin.command: apt-config dump
+      register: apt_config
+      changed_when: false
+      failed_when: false
+
+    - name: check unattended-upgrades service
+      ansible.builtin.command: systemctl is-enabled unattended-upgrades
+      register: uu_service
+      changed_when: false
+      failed_when: false
+
+    - name: check apt-daily-upgrade timer
+      ansible.builtin.command: systemctl is-active apt-daily-upgrade.timer
+      register: uu_timer
+      changed_when: false
+      failed_when: false
+
+    - name: determine unattended-upgrades status
+      ansible.builtin.set_fact:
+        uu_installed: "{{ 'install ok installed' in uu_pkg.stdout }}"
+        uu_periodic_update: >-
+          {{ apt_config.stdout_lines | select('match', '^APT::Periodic::Update-Package-Lists "1";$') | list | length > 0 }}
+        uu_periodic_upgrade: >-
+          {{ apt_config.stdout_lines | select('match', '^APT::Periodic::Unattended-Upgrade "1";$') | list | length > 0 }}
+        uu_security_origin: >-
+          {{
+            apt_config.stdout_lines
+            | select('match', '^Unattended-Upgrade::(Allowed-Origins|Origins-Pattern)::')
+            | select('search', '(?i)security')
+            | list | length > 0
+          }}
+        uu_service_enabled: "{{ uu_service.stdout == 'enabled' }}"
+        uu_timer_active: "{{ uu_timer.stdout == 'active' }}"
+
+    - name: determine overall result
+      ansible.builtin.set_fact:
+        uu_enabled: >-
+          {{
+            uu_installed and uu_periodic_update and uu_periodic_upgrade
+            and uu_security_origin and uu_service_enabled and uu_timer_active
+          }}
+
+    - name: print unattended-upgrades status
+      ansible.builtin.debug:
+        msg: |
+          Host: {{ inventory_hostname }}
+          Unattended security upgrades: {{ 'ENABLED' if uu_enabled else 'NOT ENABLED' }}
+            package installed:           {{ uu_installed }}
+            periodic package lists:      {{ uu_periodic_update }}
+            periodic unattended-upgrade: {{ uu_periodic_upgrade }}
+            security origin allowed:     {{ uu_security_origin }}
+            service enabled:             {{ uu_service_enabled }} ({{ uu_service.stdout | default('unknown') }})
+            apt-daily-upgrade timer:     {{ uu_timer_active }} ({{ uu_timer.stdout | default('unknown') }})
+
+    - name: flag hosts without unattended security upgrades
+      ansible.builtin.debug:
+        msg: |
+          Host: {{ inventory_hostname }}
+          WARNING: unattended security upgrades are not fully enabled. Run unattended-upgrades.sh to fix.
+      when: not uu_enabled
